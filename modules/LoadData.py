@@ -154,7 +154,7 @@ def load_data(label='h', phase='aug_evaluation'):
                 "y_train": y_train,
                 "x_train_128": x_train_128,
                 'x_val_128': x_valid,
-                "x_val": x_valid_128,
+                "x_val": x_valid,
                 "y_val": y_valid,
                 "x_test": x_test,
                 "y_test": y_test
