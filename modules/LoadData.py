@@ -150,13 +150,13 @@ def load_data(label='h', phase='aug_evaluation'):
     if phase == 'search':
 
         return {
-                "x_train": x_train_128,
+                "x_train": x_train,
                 "y_train": y_train,
                 "x_train_128": x_train_128,
-                'x_val_128': x_valid_128,
+                'x_val_128': x_valid,
                 "x_val": x_valid_128,
                 "y_val": y_valid,
-                "x_test": x_test_128,
+                "x_test": x_test,
                 "y_test": y_test
                 }
 
