@@ -53,6 +53,12 @@ def get_args():
                            "\n resnet=[50,101,152]"
                            "\n vgg=[16,19]"
                            "\n usage:[name]_[version]")
+ parser.add_argument('-address', dest='address', default='vgg_19',
+                      type=str, nargs='?',
+                      help="Chosen model:[densenet,vgg]"
+                           "\n resnet=[50,101,152]"
+                           "\n vgg=[16,19]"
+                           "\n usage:[name]_[version]")
   return parser.parse_args()
 def get_model(arg):
 
@@ -69,7 +75,7 @@ def get_model(arg):
     else:
         return load_model(arg)
 
-def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_address,k_fold):
+def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_address,k_fold,address):
     model=get_model(model_name)
 
     if type=="dtl":
@@ -80,7 +86,7 @@ def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_ad
           ans=DTL.k_fold(5,label, epochs, params, load_best_weigth=True, verbose=1, TensorB=True, name_of_best_weight=name_of_best_weight,base_model=model)
           print(ans)
         else:
-          model = DTL(params=params, base_model=model,label=label)
+          model = DTL(params=params, base_model=model,label=label,address=adress)
           model.train(epochs, load_best_weigth=True, verbose=1, TensorB=True, name_of_best_weight=name_of_best_weight, phase="train")
           ans = model.evaluate()
           print(ans)
@@ -107,7 +113,7 @@ def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_ad
 
 def main():
   args=get_args()
-  _main(args.epochs,args.label,args.model,args.type,args.phase,args.bwn,args.second_model_address,args.k_fold)
+  _main(args.epochs,args.label,args.model,args.type,args.phase,args.bwn,args.second_model_address,args.k_fold,args.address)
   sys.stdout.flush()
 
 if __name__ == '__main__':
