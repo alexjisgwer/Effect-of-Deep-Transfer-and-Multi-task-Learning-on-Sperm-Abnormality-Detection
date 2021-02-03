@@ -67,6 +67,9 @@ class DTL():
                 x = Dropout(params["dropout"])(x)
         x = Dense(1, activation="sigmoid", name="classification")(x)
         model = tf.keras.Model(model.input, x)
+        import keras
+        model = keras.models.load_model("/content/drive/MyDrive/MHSMA/model/h.h5")
+
         model.compile(optimizer=optimizer, metrics=["accuracy"], loss=params["loss"])
 
         self.__model = model
