@@ -28,7 +28,7 @@ import os
 import pickle
 
 class DTL():
-    def __init__(self, params,base_model,label,data=None):
+    def __init__(self, params,base_model,label,address,data=None):
         default_params = {"agumentation": False, "scale": False, "dense_activation": "relu", "regularizition": 0.0
             , "dropout": 0.0, "optimizer": "adam", "number_of_dense": 1, "balancer": "None", "batch_size": 32}
         default_params.update(params)
@@ -68,7 +68,7 @@ class DTL():
         x = Dense(1, activation="sigmoid", name="classification")(x)
         model = tf.keras.Model(model.input, x)
         import keras
-        model = keras.models.load_model("/content/drive/MyDrive/MHSMA/model/h.h5")
+        model = keras.models.load_model(address)
 
         model.compile(optimizer=optimizer, metrics=["accuracy"], loss=params["loss"])
 
