@@ -53,7 +53,7 @@ def get_args():
                            "\n resnet=[50,101,152]"
                            "\n vgg=[16,19]"
                            "\n usage:[name]_[version]")
- parser.add_argument('-address', dest='address', default='vgg_19',
+  parser.add_argument('-address', dest='address', default='vgg_19',
                       type=str, nargs='?',
                       help="Chosen model:[densenet,vgg]"
                            "\n resnet=[50,101,152]"
