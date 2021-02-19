@@ -120,7 +120,9 @@ class DTL():
             x_test.append(img)
             y_test.append(3)         
           
-        
+        y_test=np.array(y_test)
+        y_val=np.array(y_val)
+        y_train=np.array(y_train)
         y_test = y_test.reshape(len(y_test), 1)
         y_val = y_val.reshape(len(y_val), 1)
         y_train = y_train.reshape(len(y_train), 1)
