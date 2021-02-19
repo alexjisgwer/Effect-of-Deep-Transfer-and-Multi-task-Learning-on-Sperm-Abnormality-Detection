@@ -121,6 +121,15 @@ class DTL():
             y_test.append(3)         
           
         
+        y_test = y_test.reshape(len(y_test), 1)
+        y_val = y_val.reshape(len(y_val), 1)
+        y_train = y_train.reshape(len(y_train), 1)
+        num_classes = 4
+        y_test = (y_test== torch.arange(num_classes).reshape(1, num_classes)).float()
+        y_val = (y_val== torch.arange(num_classes).reshape(1, num_classes)).float()
+        y_train = (y_train== torch.arange(num_classes).reshape(1, num_classes)).float()
+
+        
         data={}
         
         data["x_test"]=np.array(x_test)
@@ -153,7 +162,7 @@ class DTL():
                 x = Dense(params["nn"], activation=params["dense_activation"])(x)
             if dropout:
                 x = Dropout(params["dropout"])(x)
-        x = Dense(1, activation="sigmoid", name="classification")(x)
+        x = Dense(4, activation="sigmoid", name="classification")(x)
         model = tf.keras.Model(model.input, x)
         model.compile(optimizer=optimizer, metrics=["accuracy"], loss=params["loss"])
         import keras
