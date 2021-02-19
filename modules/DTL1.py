@@ -60,23 +60,6 @@ class DTL():
           img=np.array(img)
           if l<i:
             x_train.append(img)
-            y_train.append(1)
-          
-          elif l>=i and l<i+j:
-            x_val.append(img)
-            y_val.append(1)
-          else:
-            x_test.append(img)
-            y_test.append(1)
-
-        li=os.listdir("/content/HuSHem/02_Tapered")
-        i=int(0.6*len(li))
-        j=int(0.2*len(li))
-        for l in range(len(li)):
-          img=Image.open("/content/HuSHem/02_Tapered/"+li[l]).resize((128,128)).convert("L")
-          img=np.array(img)
-          if l<i:
-            x_train.append(img)
             y_train.append(0)
           
           elif l>=i and l<i+j:
@@ -86,6 +69,23 @@ class DTL():
             x_test.append(img)
             y_test.append(0)
 
+        li=os.listdir("/content/HuSHem/02_Tapered")
+        i=int(0.6*len(li))
+        j=int(0.2*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/HuSHem/02_Tapered/"+li[l]).resize((128,128)).convert("L")
+          img=np.array(img)
+          if l<i:
+            x_train.append(img)
+            y_train.append(1)
+          
+          elif l>=i and l<i+j:
+            x_val.append(img)
+            y_val.append(1)
+          else:
+            x_test.append(img)
+            y_test.append(1)
+
         li=os.listdir("/content/HuSHem/03_Pyriform")
         i=int(0.6*len(li))
         j=int(0.2*len(li))
@@ -94,14 +94,14 @@ class DTL():
           img=np.array(img)
           if l<i:
             x_train.append(img)
-            y_train.append(0)
+            y_train.append(2)
           
           elif l>=i and l<i+j:
             x_val.append(img)
-            y_val.append(0)
+            y_val.append(2)
           else:
             x_test.append(img)
-            y_test.append(0)   
+            y_test.append(2)   
 
         li=os.listdir("/content/HuSHem/04_Amorphous")
         i=int(0.6*len(li))
@@ -111,14 +111,14 @@ class DTL():
           img=np.array(img)
           if l<i:
             x_train.append(img)
-            y_train.append(0)
+            y_train.append(3)
           
           elif l>=i and l<i+j:
             x_val.append(img)
-            y_val.append(0)
+            y_val.append(3)
           else:
             x_test.append(img)
-            y_test.append(0)         
+            y_test.append(3)         
           
         
         data={}
