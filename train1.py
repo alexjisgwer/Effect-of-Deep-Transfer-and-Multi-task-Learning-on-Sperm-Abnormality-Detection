@@ -14,7 +14,7 @@ import tensorflow as tf
 
 from modules.LoadData import load_data
 from modules.DMTL import DMTL
-from modules.DTL import DTL1
+from modules.DTL1 import DTL
 import os
 import h5py
 from tensorflow.keras.models import save_model,load_model
@@ -64,7 +64,7 @@ def get_model(arg):
 
     name,version=arg.split("_")
     list={}
-    list["vgg"]={"19":tf.keras.applications.vgg19.VGG19}
+    list["vgg"]={"16":tf.keras.applications.vgg16.VGG16}
     list["densenet"]={"121":tf.keras.applications.densenet.DenseNet121,"169":tf.keras.applications.densenet.DenseNet169,"201":tf.keras.applications.densenet.DenseNet201}
     list["resnet"]={"50":tf.keras.applications.resnet.ResNet50,"101":tf.keras.applications.resnet.ResNet101,"152":tf.keras.applications.resnet.ResNet152}
     list["resnetV2"]={"50":tf.keras.applications.resnet_v2.ResNet50V2,"101":tf.keras.applications.resnet_v2.ResNet101V2,"152":tf.keras.applications.resnet_v2.ResNet152V2}
@@ -86,7 +86,7 @@ def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_ad
           ans=DTL.k_fold(5,label, epochs, params, load_best_weigth=True, verbose=1, TensorB=True, name_of_best_weight=name_of_best_weight,base_model=model)
           print(ans)
         else:
-          model = DTL1(params=params, base_model=model,label=label,address=address)
+          model = DTL(params=params, base_model=model,label=label,address=address)
           model.train(epochs, load_best_weigth=True, verbose=1, TensorB=True, name_of_best_weight=name_of_best_weight, phase="train")
           ans = model.evaluate()
           print(ans)
