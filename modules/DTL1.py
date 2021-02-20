@@ -173,7 +173,7 @@ class DTL():
          
           s=maxi-ar[i]
           for j in range(len(x_test)):
-            if y_train[j]==i:
+            if y_test[j]==i:
               x_test=np.append(x_test,[x_test[j]],axis=0)
               y_test=np.append(y_test,[i],axis=0)
               s-=1
