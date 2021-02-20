@@ -276,7 +276,7 @@ class DTL():
 
                 hist = self.__model.fit(self.__data["x_train"], self.__data["y_train"], epochs=epochs,
                                         batch_size=batch_size,
-                                       shuffle=True,
+                                       shuffle=True,callbacks=callbacks,
                                          verbose=verbose)
         # if load_best_weigth:
         #     self.__model.load_weights(name_of_best_weight)
