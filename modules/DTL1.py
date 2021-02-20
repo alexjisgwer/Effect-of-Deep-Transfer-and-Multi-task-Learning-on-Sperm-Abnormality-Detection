@@ -28,22 +28,8 @@ import os
 import pickle
 
 class DTL():
-    def __init__(self, params,base_model,label,address,data=None):
-        default_params = {"agumentation": False, "scale": False, "dense_activation": "relu", "regularizition": 0.0
-            , "dropout": 0.0, "optimizer": "adam", "number_of_dense": 1, "balancer": "None", "batch_size": 32}
-        default_params.update(params)
-        Model = base_model
-        params = default_params
-        # if data==None:
-        #   data = load_data(label=label, phase="search")
-        self.batch_size = params["batch_size"]
-        # if params['agumentation']:
-        #     data["x_val"] = ld.normalize(data["x_val"])
-        #     data["x_test"] = ld.normalize(data["x_test"])
-        # elif params["scale"]:
-        #     data["x_val"] = ld.normalize(data["x_val"])
-        #     data["x_test"] = ld.normalize(data["x_test"])
-        #     data["x_train"] = ld.normalize(data["x_train"])
+    @staticmethod
+    def load():
         from PIL import Image
         import os
         x_val=[]
@@ -64,17 +50,10 @@ class DTL():
           img=Image.open("/content/HuSHem/01_Normal/"+li[l])
           img=np.array(img)
           img=crop_center(img,70,70)
-          if l<i:
-            x_train.append(img)
-            y_train.append(0)
-          
-          # elif l>=i and l<i+j:
-          #   x_val.append(img)
-          #   y_val.append(0)
-          else:
-            x_test.append(img)
-            y_test.append(0)
+          x_train.append(img)
+          y_train.append(0)
 
+          
         li=os.listdir("/content/HuSHem/02_Tapered")
         i=int(0.8*len(li))
         j=int(0.2*len(li))
@@ -82,34 +61,19 @@ class DTL():
           img=Image.open("/content/HuSHem/02_Tapered/"+li[l])
           img=np.array(img)
           img=crop_center(img,70,70)
-          if l<i:
-            x_train.append(img)
-            y_train.append(1)
-          
-          # elif l>=i and l<i+j:
-          #   x_val.append(img)
-          #   y_val.append(1)
-          else:
-            x_test.append(img)
-            y_test.append(1)
+          x_train.append(img)
+          y_train.append(1)
+  
 
         li=os.listdir("/content/HuSHem/03_Pyriform")
-        i=int(0.8*len(li))
-        j=int(0.2*len(li))
+
         for l in range(len(li)):
           img=Image.open("/content/HuSHem/03_Pyriform/"+li[l])
           img=np.array(img)
           img=crop_center(img,70,70)
-          if l<i:
-            x_train.append(img)
-            y_train.append(2)
-          
-          # elif l>=i and l<i+j:
-          #   x_val.append(img)
-          #   y_val.append(2)
-          else:
-            x_test.append(img)
-            y_test.append(2)   
+          x_train.append(img)
+          y_train.append(2)
+
 
         li=os.listdir("/content/HuSHem/04_Amorphous")
         i=int(0.8*len(li))
@@ -118,75 +82,68 @@ class DTL():
           img=Image.open("/content/HuSHem/04_Amorphous/"+li[l])
           img=np.array(img)
           img=crop_center(img,70,70)
-          if l<i:
-            x_train.append(img)
-            y_train.append(3)
-          
-          # elif l>=i and l<i+j:
-          #   x_val.append(img)
-          #   y_val.append(3)
-          else:
-            x_test.append(img)
-            y_test.append(3)   
+
+          x_train.append(img)
+          y_train.append(3)
+        
+        
+        li=os.listdir("/content/fake/no")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/no/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(0)
 
 
-        # li=os.listdir("/content/fake/no")
-        # i=int(0.7*len(li))
-        # j=int(0.3*len(li))
-        # for l in range(len(li)):
-        #   img=Image.open("/content/fake/no/"+li[l]).resize((64,64))
-        #   img=np.array(img)
-        #   if l<i:
-        #     x_train.append(img)
-        #     y_train.append(0)
-        #   else:
-        #     x_val.append(img)
-        #     y_val.append(0)
+
+        li=os.listdir("/content/fake/ta")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/ta/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(1)
 
 
-        # li=os.listdir("/content/fake/ta")
-        # i=int(0.7*len(li))
-        # j=int(0.3*len(li))
-        # for l in range(len(li)):
-        #   img=Image.open("/content/fake/ta/"+li[l]).resize((64,64))
-        #   img=np.array(img)
-        #   if l<i:
-        #     x_train.append(img)
-        #     y_train.append(1)
 
-        #   else:
-        #     x_val.append(img)
-        #     y_val.append(1)
+        li=os.listdir("/content/fake/py")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/py/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(2)
+   
 
 
-        # li=os.listdir("/content/fake/py")
-        # i=int(0.7*len(li))
-        # j=int(0.3*len(li))
-        # for l in range(len(li)):
-        #   img=Image.open("/content/fake/py/"+li[l]).resize((64,64))
-        #   img=np.array(img)
-        #   if l<i:
-        #     x_train.append(img)
-        #     y_train.append(2)
-          
-        #   else:
-        #     x_val.append(img)
-        #     y_val.append(2)
+        li=os.listdir("/content/fake/ap")
+        
+        for l in range(len(li)):
+          img=Image.open("/content/fake/ap/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(3)
 
 
-        # li=os.listdir("/content/fake/ap")
-        # i=int(0.7*len(li))
-        # j=int(0.3*len(li))
-        # for l in range(len(li)):
-        #   img=Image.open("/content/fake/ap/"+li[l]).resize((64,64))
-        #   img=np.array(img)
-        #   if l<i:
-        #     x_train.append(img)
-        #     y_train.append(3)
-          
-        #   else:
-        #     x_val.append(img)
-        #     y_val.append(3)        
+        y_train=np.array(y_train)
+        x_train=np.array(x_train)
+        tmp_idx = np.arange(x_train.shape[0])
+        np.random.shuffle(tmp_idx)
+        x_train=x_train[tmp_idx]
+        y_train=y_train[tmp_idx]
+        i=int(0.8*len(x_train))
+        x_test=x_train[i:]
+        x_train=x_train[:i]
+        y_test=y_train[i:]
+        y_train=y_train[:i]
           
         y_test=np.array(y_test)
         y_val=np.array(y_val)
@@ -199,20 +156,45 @@ class DTL():
         y_val = (y_val==np.arange(num_classes).reshape(1, num_classes))*1
         y_train = (y_train==np.arange(num_classes).reshape(1, num_classes))*1
       
-        
+       
         data={}
+        # data["x"]=x_train
+        # data["y"]=y_train
+        
         data["x_test"]=np.array(x_test)
         data["y_test"]=np.array(y_test)
 
-        data["x_val"]=np.array(x_val)
-        data["y_val"]=np.array(y_val)
-
         data["x_train"]=np.array(x_train)
         data["y_train"]=np.array(y_train)
+        import pickle
+        with open('data' + '.pkl', 'wb') as f:
+          pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+
+        with open('data' + '.pkl', 'rb') as f:
+          data=pickle.load(f)
+        return data
+    def __init__(self, params,base_model,label,address,data=None):
+        default_params = {"agumentation": False, "scale": False, "dense_activation": "relu", "regularizition": 0.0
+            , "dropout": 0.0, "optimizer": "adam", "number_of_dense": 1, "balancer": "None", "batch_size": 32}
+        default_params.update(params)
+        Model = base_model
+        params = default_params
+        # if data==None:
+        #   data = load_data(label=label, phase="search")
+        self.batch_size = params["batch_size"]
+        # if params['agumentation']:
+        #     data["x_val"] = ld.normalize(data["x_val"])
+        #     data["x_test"] = ld.normalize(data["x_test"])
+        # elif params["scale"]:
+        #     data["x_val"] = ld.normalize(data["x_val"])
+        #     data["x_test"] = ld.normalize(data["x_test"])
+        #     data["x_train"] = ld.normalize(data["x_train"])
+
         # data["x_test"]=(data["x_test"]-127.5)/127.5
         # data["x_val"]=(data["x_val"]-127.5)/127.5
         # data["x_train"]=(data["x_train"]-127.5)/127.5
-        print(len(data["y_test"]),len(data["y_val"]),len(data["y_train"]))
+        data=DTL.load()
+        # print(len(data["y_test"]),len(data["y_val"]),len(data["y_train"]))
         regularization = not (params["regularizition"] == 0.0)
 
         dropout = not (params["dropout"] == 0.0)
@@ -223,7 +205,7 @@ class DTL():
         optimizer = params["optimizer"]
         # inp = Input((64,64, 1))
         # con = concatenate([inp, inp, inp])
-        # import keras
+        import keras
         # model = keras.models.load_model(address)
         model = Model(include_top=False, weights='imagenet', input_shape=(70,70,3))
         x = Flatten()(model.layers[-1].output)
@@ -239,7 +221,7 @@ class DTL():
                 x = Dropout(params["dropout"])(x)
         x = Dense(4, activation="softmax", name="classification")(x)
         model = tf.keras.Model(model.input, x)
-        model.compile(optimizer=optimizer, metrics=["accuracy"], loss=params["loss"])
+        model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001), metrics=["accuracy"], loss=params["loss"])
         # model.load_weights("w.h5")
         
         self.__model = model
@@ -255,7 +237,8 @@ class DTL():
         # self.__data["x_val"] = self.__data["x_val_128"]
         batch_size = self.batch_size
         balancer = self.balancer
-        callbacks = [DTL_ModelCheckpoint(self.__data["x_val"], self.__data["y_val"], self.__model, name_of_best_weight)]
+        callbacks=[]
+        # callbacks = [DTL_ModelCheckpoint(self.__data["x_val"], self.__data["y_val"], self.__model, name_of_best_weight)]
         if TensorB:  # save History of train
             tb = TensorBoard(log_dir="log_train/" + "#".join(self.details))
             callbacks.append(tb)
@@ -286,7 +269,7 @@ class DTL():
                 generator = Agumentation(self.__data, batch_size)
                 hist = self.__model.fit_generator(generator,
                                                   validation_data=(self.__data["x_val"], self.__data["y_val"]),
-                                                  shuffle=True, callbacks=callbacks, steps_per_epoch=1000 / batch_size,
+                                                  shuffle=True, steps_per_epoch=1000 / batch_size,
                                                   epochs=epochs, verbose=verbose)
             ###It means that we will use offline balancers
             else:
@@ -339,9 +322,10 @@ class DTL():
     @staticmethod
     def k_fold(k,label, epochs, params, load_best_weigth, verbose, TensorB, name_of_best_weight,base_model):
         flag = params['agumentation']
-        data = ld.load_data(label, phase="aug_evaluation") if flag==True else ld.load_data(label, phase="evaluation")
+        data =DTL.load()
         results=[]
         size = len(data['x']) // k
+        print(size)
         tmp_idx = np.arange(data['x'].shape[0])
         np.random.shuffle(tmp_idx)
         x = data['x'][tmp_idx]
@@ -357,13 +341,13 @@ class DTL():
             tmp = random.sample(range(len(x_train)), 232)
             x_val = []
             y_val = []
-            for j in tmp:
-                x_val.append(x_train[j])
-                y_val.append(y_train[j])
-            x_val = np.array(x_val)
-            y_val = np.array(y_val)
-            x_train = np.delete(x_train, tmp, axis=0)
-            y_train = np.delete(y_train, tmp, axis=0)
+            # for j in tmp:
+            #     x_val.append(x_train[j])
+            #     y_val.append(y_train[j])
+            # x_val = np.array(x_val)
+            # y_val = np.array(y_val)
+            # x_train = np.delete(x_train, tmp, axis=0)
+            # y_train = np.delete(y_train, tmp, axis=0)
 
             ##########fixing data#########
             data = ld.fix_data(flag, x_train, y_train, x_val, y_val, x_test, y_test)
