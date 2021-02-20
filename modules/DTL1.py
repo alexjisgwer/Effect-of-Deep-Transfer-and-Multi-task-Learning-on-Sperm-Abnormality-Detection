@@ -52,132 +52,141 @@ class DTL():
         y_val=[]
         y_train=[]
         y_test=[]
+        def crop_center(img,cropx,cropy):
+          y,x,_ = img.shape
+          startx = x//2-(cropx//2)
+          starty = y//2-(cropy//2)
+          return np.array(img[starty:starty+cropy,startx:startx+cropx,:])
         li=os.listdir("/content/HuSHem/01_Normal")
-        i=int(0.6*len(li))
+        i=int(0.8*len(li))
         j=int(0.2*len(li))
         for l in range(len(li)):
-          img=Image.open("/content/HuSHem/01_Normal/"+li[l]).resize((64,64))
+          img=Image.open("/content/HuSHem/01_Normal/"+li[l])
           img=np.array(img)
+          img=crop_center(img,70,70)
           if l<i:
             x_train.append(img)
             y_train.append(0)
           
-          elif l>=i and l<i+j:
-            x_val.append(img)
-            y_val.append(0)
+          # elif l>=i and l<i+j:
+          #   x_val.append(img)
+          #   y_val.append(0)
           else:
             x_test.append(img)
             y_test.append(0)
 
         li=os.listdir("/content/HuSHem/02_Tapered")
-        i=int(0.6*len(li))
+        i=int(0.8*len(li))
         j=int(0.2*len(li))
         for l in range(len(li)):
-          img=Image.open("/content/HuSHem/02_Tapered/"+li[l]).resize((64,64))
+          img=Image.open("/content/HuSHem/02_Tapered/"+li[l])
           img=np.array(img)
+          img=crop_center(img,70,70)
           if l<i:
             x_train.append(img)
             y_train.append(1)
           
-          elif l>=i and l<i+j:
-            x_val.append(img)
-            y_val.append(1)
+          # elif l>=i and l<i+j:
+          #   x_val.append(img)
+          #   y_val.append(1)
           else:
             x_test.append(img)
             y_test.append(1)
 
         li=os.listdir("/content/HuSHem/03_Pyriform")
-        i=int(0.6*len(li))
+        i=int(0.8*len(li))
         j=int(0.2*len(li))
         for l in range(len(li)):
-          img=Image.open("/content/HuSHem/03_Pyriform/"+li[l]).resize((64,64))
+          img=Image.open("/content/HuSHem/03_Pyriform/"+li[l])
           img=np.array(img)
+          img=crop_center(img,70,70)
           if l<i:
             x_train.append(img)
             y_train.append(2)
           
-          elif l>=i and l<i+j:
-            x_val.append(img)
-            y_val.append(2)
+          # elif l>=i and l<i+j:
+          #   x_val.append(img)
+          #   y_val.append(2)
           else:
             x_test.append(img)
             y_test.append(2)   
 
         li=os.listdir("/content/HuSHem/04_Amorphous")
-        i=int(0.6*len(li))
+        i=int(0.8*len(li))
         j=int(0.2*len(li))
         for l in range(len(li)):
-          img=Image.open("/content/HuSHem/04_Amorphous/"+li[l]).resize((64,64))
+          img=Image.open("/content/HuSHem/04_Amorphous/"+li[l])
           img=np.array(img)
+          img=crop_center(img,70,70)
           if l<i:
             x_train.append(img)
             y_train.append(3)
           
-          elif l>=i and l<i+j:
-            x_val.append(img)
-            y_val.append(3)
+          # elif l>=i and l<i+j:
+          #   x_val.append(img)
+          #   y_val.append(3)
           else:
             x_test.append(img)
             y_test.append(3)   
 
 
-        li=os.listdir("/content/fake/no")
-        i=int(0.7*len(li))
-        j=int(0.3*len(li))
-        for l in range(len(li)):
-          img=Image.open("/content/fake/no/"+li[l]).resize((64,64))
-          img=np.array(img)
-          if l<i:
-            x_train.append(img)
-            y_train.append(0)
-          else:
-            x_val.append(img)
-            y_val.append(0)
+        # li=os.listdir("/content/fake/no")
+        # i=int(0.7*len(li))
+        # j=int(0.3*len(li))
+        # for l in range(len(li)):
+        #   img=Image.open("/content/fake/no/"+li[l]).resize((64,64))
+        #   img=np.array(img)
+        #   if l<i:
+        #     x_train.append(img)
+        #     y_train.append(0)
+        #   else:
+        #     x_val.append(img)
+        #     y_val.append(0)
 
 
-        li=os.listdir("/content/fake/ta")
-        i=int(0.7*len(li))
-        j=int(0.3*len(li))
-        for l in range(len(li)):
-          img=Image.open("/content/fake/ta/"+li[l]).resize((64,64))
-          img=np.array(img)
-          if l<i:
-            x_train.append(img)
-            y_train.append(1)
+        # li=os.listdir("/content/fake/ta")
+        # i=int(0.7*len(li))
+        # j=int(0.3*len(li))
+        # for l in range(len(li)):
+        #   img=Image.open("/content/fake/ta/"+li[l]).resize((64,64))
+        #   img=np.array(img)
+        #   if l<i:
+        #     x_train.append(img)
+        #     y_train.append(1)
 
-          else:
-            x_val.append(img)
-            y_val.append(1)
+        #   else:
+        #     x_val.append(img)
+        #     y_val.append(1)
 
 
-        li=os.listdir("/content/fake/py")
-        i=int(0.7*len(li))
-        j=int(0.3*len(li))
-        for l in range(len(li)):
-          img=Image.open("/content/fake/py/"+li[l]).resize((64,64))
-          img=np.array(img)
-          if l<i:
-            x_train.append(img)
-            y_train.append(2)
+        # li=os.listdir("/content/fake/py")
+        # i=int(0.7*len(li))
+        # j=int(0.3*len(li))
+        # for l in range(len(li)):
+        #   img=Image.open("/content/fake/py/"+li[l]).resize((64,64))
+        #   img=np.array(img)
+        #   if l<i:
+        #     x_train.append(img)
+        #     y_train.append(2)
           
-          else:
-            x_val.append(img)
-            y_val.append(2)
+        #   else:
+        #     x_val.append(img)
+        #     y_val.append(2)
 
 
-        li=os.listdir("/content/fake/ap")
-        i=int(0.7*len(li))
-        j=int(0.3*len(li))
-        for l in range(len(li)):
-          img=Image.open("/content/fake/ap/"+li[l]).resize((64,64))
-          img=np.array(img)
-          if l<i:
-            x_train.append(img)
-            y_train.append(3)
+        # li=os.listdir("/content/fake/ap")
+        # i=int(0.7*len(li))
+        # j=int(0.3*len(li))
+        # for l in range(len(li)):
+        #   img=Image.open("/content/fake/ap/"+li[l]).resize((64,64))
+        #   img=np.array(img)
+        #   if l<i:
+        #     x_train.append(img)
+        #     y_train.append(3)
           
-          else:
-            x_val.append(img)
-            y_val.append(3)        
+        #   else:
+        #     x_val.append(img)
+        #     y_val.append(3)        
           
         y_test=np.array(y_test)
         y_val=np.array(y_val)
@@ -212,11 +221,11 @@ class DTL():
 
         ############ Creating CNN ##############
         optimizer = params["optimizer"]
-        inp = Input((64,64, 1))
-        con = concatenate([inp, inp, inp])
+        # inp = Input((64,64, 1))
+        # con = concatenate([inp, inp, inp])
         # import keras
         # model = keras.models.load_model(address)
-        model = Model(include_top=False, weights='imagenet', input_tensor=con)
+        model = Model(include_top=False, weights='imagenet', input_shape=(70,70,3))
         x = Flatten()(model.layers[-1].output)
         for l in model.layers:
           l.trainable=False
@@ -284,10 +293,10 @@ class DTL():
 
                 hist = self.__model.fit(self.__data["x_train"], self.__data["y_train"], epochs=epochs,
                                         batch_size=batch_size,
-                                        validation_data=(self.__data["x_val"], self.__data["y_val"]), shuffle=True,
-                                        callbacks=callbacks, verbose=verbose)
-        if load_best_weigth:
-            self.__model.load_weights(name_of_best_weight)
+                                       shuffle=True,
+                                         verbose=verbose)
+        # if load_best_weigth:
+        #     self.__model.load_weights(name_of_best_weight)
         save_model(self.__model, "model_" + name_of_best_weight)
 
         # cleaning model from GPU
