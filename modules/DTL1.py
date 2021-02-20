@@ -131,6 +131,21 @@ class DTL():
           img=crop_center(img,70,70)
           x_train.append(img)
           y_train.append(3)
+        y_train=np.array(y_train)
+        x_train=np.array(x_train)
+        tmp_idx = np.arange(x_train.shape[0])
+        np.random.shuffle(tmp_idx)
+        x_train=x_train[tmp_idx]
+        y_train=y_train[tmp_idx]
+        
+        
+        i=int(0.8*len(x_train))
+        x_test=x_train[i:]
+        x_train=x_train[:i]
+        y_test=y_train[i:]
+        y_train=y_train[:i]
+ 
+
 
         ar=np.unique(y_train,return_counts=True)[1]
         maxi=np.max(np.unique(y_train,return_counts=True)[1])
@@ -142,24 +157,31 @@ class DTL():
           s=maxi-ar[i]
           for j in range(len(x_train)):
             if y_train[j]==i:
-              x_train.append(x_train[j])
-              y_train.append(i)
+              x_train=np.append(x_train,[x_train[j]],axis=0)
+              y_train=np.append(y_train,[i],axis=0)
               s-=1
               if s==0:
                 break
         print(np.unique(y_train,return_counts=True)[1])
-        y_train=np.array(y_train)
-        x_train=np.array(x_train)
-        tmp_idx = np.arange(x_train.shape[0])
-        np.random.shuffle(tmp_idx)
-        x_train=x_train[tmp_idx]
-        y_train=y_train[tmp_idx]
-        i=int(0.8*len(x_train))
-        x_test=x_train[i:]
-        x_train=x_train[:i]
-        y_test=y_train[i:]
-        y_train=y_train[:i]
- 
+
+        ar=np.unique(y_test,return_counts=True)[1]
+        maxi=np.max(np.unique(y_test,return_counts=True)[1])
+        i_maxi=np.argmax(np.unique(y_test,return_counts=True)[1])
+        for i in range(4):
+          if i==i_maxi:
+            continue
+         
+          s=maxi-ar[i]
+          for j in range(len(x_test)):
+            if y_train[j]==i:
+              x_test=np.append(x_test,[x_test[j]],axis=0)
+              y_test=np.append(y_test,[i],axis=0)
+              s-=1
+              if s==0:
+                break
+        print(np.unique(y_test,return_counts=True)[1])
+
+
         y_test=np.array(y_test)
         y_val=np.array(y_val)
         y_train=np.array(y_train)
