@@ -56,7 +56,7 @@ class DTL():
         i=int(0.6*len(li))
         j=int(0.2*len(li))
         for l in range(len(li)):
-          img=Image.open("/content/HuSHem/01_Normal/"+li[l]).resize((128,128)).convert("L")
+          img=Image.open("/content/HuSHem/01_Normal/"+li[l]).resize((64,64))
           img=np.array(img)
           if l<i:
             x_train.append(img)
@@ -73,7 +73,7 @@ class DTL():
         i=int(0.6*len(li))
         j=int(0.2*len(li))
         for l in range(len(li)):
-          img=Image.open("/content/HuSHem/02_Tapered/"+li[l]).resize((128,128)).convert("L")
+          img=Image.open("/content/HuSHem/02_Tapered/"+li[l]).resize((64,64))
           img=np.array(img)
           if l<i:
             x_train.append(img)
@@ -90,7 +90,7 @@ class DTL():
         i=int(0.6*len(li))
         j=int(0.2*len(li))
         for l in range(len(li)):
-          img=Image.open("/content/HuSHem/03_Pyriform/"+li[l]).resize((128,128)).convert("L")
+          img=Image.open("/content/HuSHem/03_Pyriform/"+li[l]).resize((64,64))
           img=np.array(img)
           if l<i:
             x_train.append(img)
@@ -107,7 +107,7 @@ class DTL():
         i=int(0.6*len(li))
         j=int(0.2*len(li))
         for l in range(len(li)):
-          img=Image.open("/content/HuSHem/04_Amorphous/"+li[l]).resize((128,128)).convert("L")
+          img=Image.open("/content/HuSHem/04_Amorphous/"+li[l]).resize((64,64))
           img=np.array(img)
           if l<i:
             x_train.append(img)
@@ -118,7 +118,66 @@ class DTL():
             y_val.append(3)
           else:
             x_test.append(img)
-            y_test.append(3)         
+            y_test.append(3)   
+
+
+        li=os.listdir("/content/fake/no")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/no/"+li[l]).resize((64,64))
+          img=np.array(img)
+          if l<i:
+            x_train.append(img)
+            y_train.append(0)
+          else:
+            x_val.append(img)
+            y_val.append(0)
+
+
+        li=os.listdir("/content/fake/ta")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/ta/"+li[l]).resize((64,64))
+          img=np.array(img)
+          if l<i:
+            x_train.append(img)
+            y_train.append(1)
+
+          else:
+            x_val.append(img)
+            y_val.append(1)
+
+
+        li=os.listdir("/content/fake/py")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/py/"+li[l]).resize((64,64))
+          img=np.array(img)
+          if l<i:
+            x_train.append(img)
+            y_train.append(2)
+          
+          else:
+            x_val.append(img)
+            y_val.append(2)
+
+
+        li=os.listdir("/content/fake/ap")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/ap/"+li[l]).resize((64,64))
+          img=np.array(img)
+          if l<i:
+            x_train.append(img)
+            y_train.append(3)
+          
+          else:
+            x_val.append(img)
+            y_val.append(3)        
           
         y_test=np.array(y_test)
         y_val=np.array(y_val)
@@ -127,13 +186,12 @@ class DTL():
         y_val = y_val.reshape(len(y_val), 1)
         y_train = y_train.reshape(len(y_train), 1)
         num_classes = 4
-        y_test = (y_test== torch.arange(num_classes).reshape(1, num_classes)).float()
-        y_val = (y_val== torch.arange(num_classes).reshape(1, num_classes)).float()
-        y_train = (y_train== torch.arange(num_classes).reshape(1, num_classes)).float()
-
+        y_test = (y_test== np.arange(num_classes).reshape(1, num_classes))*1
+        y_val = (y_val==np.arange(num_classes).reshape(1, num_classes))*1
+        y_train = (y_train==np.arange(num_classes).reshape(1, num_classes))*1
+      
         
         data={}
-        
         data["x_test"]=np.array(x_test)
         data["y_test"]=np.array(y_test)
 
@@ -142,6 +200,9 @@ class DTL():
 
         data["x_train"]=np.array(x_train)
         data["y_train"]=np.array(y_train)
+        # data["x_test"]=(data["x_test"]-127.5)/127.5
+        # data["x_val"]=(data["x_val"]-127.5)/127.5
+        # data["x_train"]=(data["x_train"]-127.5)/127.5
         print(len(data["y_test"]),len(data["y_val"]),len(data["y_train"]))
         regularization = not (params["regularizition"] == 0.0)
 
@@ -151,11 +212,14 @@ class DTL():
 
         ############ Creating CNN ##############
         optimizer = params["optimizer"]
-        inp = Input((128,128, 1))
+        inp = Input((64,64, 1))
         con = concatenate([inp, inp, inp])
+        # import keras
+        # model = keras.models.load_model(address)
         model = Model(include_top=False, weights='imagenet', input_tensor=con)
         x = Flatten()(model.layers[-1].output)
-
+        for l in model.layers:
+          l.trainable=False
         for i in range(params["number_of_dense"]):
             if regularization:
                 x = Dense(params["nn"], activation=params["dense_activation"],
@@ -164,11 +228,11 @@ class DTL():
                 x = Dense(params["nn"], activation=params["dense_activation"])(x)
             if dropout:
                 x = Dropout(params["dropout"])(x)
-        x = Dense(4, activation="sigmoid", name="classification")(x)
+        x = Dense(4, activation="softmax", name="classification")(x)
         model = tf.keras.Model(model.input, x)
         model.compile(optimizer=optimizer, metrics=["accuracy"], loss=params["loss"])
-        import keras
-        model = keras.models.load_model(address)
+        # model.load_weights("w.h5")
+        
         self.__model = model
         self.__data = data
         
@@ -245,6 +309,8 @@ class DTL():
         X = self.__data["x_test"]
         y = self.__data["y_test"]
         # y_pred1 = self.__model.predict(X)
+        # print(y_pred1.argmax(axis=1).shape,y_pred1.shape)
+        # acc=np.sum(y.argmax(axis=1)==y_pred1.argmax(axis=1))/47
         acc=self.__model.evaluate(X,y)
         # y_pred = y_pred1 > 0.5
         # y_pred = y_pred * 1
