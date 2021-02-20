@@ -132,7 +132,22 @@ class DTL():
           x_train.append(img)
           y_train.append(3)
 
-
+        ar=np.unique(y_train,return_counts=True)[1]
+        maxi=np.max(np.unique(y_train,return_counts=True)[1])
+        i_maxi=np.argmax(np.unique(y_train,return_counts=True)[1])
+        for i in range(4):
+          if i==i_maxi:
+            continue
+         
+          s=maxi-ar[i]
+          for j in range(len(x_train)):
+            if y_train[j]==i:
+              x_train.append(x_train[j])
+              y_train.append(i)
+              s-=1
+              if s==0:
+                break
+        print(np.unique(y_train,return_counts=True)[1])
         y_train=np.array(y_train)
         x_train=np.array(x_train)
         tmp_idx = np.arange(x_train.shape[0])
@@ -144,7 +159,7 @@ class DTL():
         x_train=x_train[:i]
         y_test=y_train[i:]
         y_train=y_train[:i]
-          
+ 
         y_test=np.array(y_test)
         y_val=np.array(y_val)
         y_train=np.array(y_train)
@@ -172,6 +187,7 @@ class DTL():
 
         with open('data' + '.pkl', 'rb') as f:
           data=pickle.load(f)
+        
         return data
     def __init__(self, params,base_model,label,address,data=None):
         default_params = {"agumentation": False, "scale": False, "dense_activation": "relu", "regularizition": 0.0
