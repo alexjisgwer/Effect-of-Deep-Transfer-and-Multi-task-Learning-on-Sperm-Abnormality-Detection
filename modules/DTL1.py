@@ -44,8 +44,7 @@ class DTL():
           starty = y//2-(cropy//2)
           return np.array(img[starty:starty+cropy,startx:startx+cropx,:])
         li=os.listdir("/content/HuSHem/01_Normal")
-        i=int(0.8*len(li))
-        j=int(0.2*len(li))
+      
         for l in range(len(li)):
           img=Image.open("/content/HuSHem/01_Normal/"+li[l])
           img=np.array(img)
@@ -148,8 +147,8 @@ class DTL():
         x_val=x[i:i+j]
         y_val=y[i:i+j]
         
-        y_test=y_test[i+j:]
-        x_test=x_test[i+j:]
+        y_test=y[i+j:]
+        x_test=x[i+j:]
  
 
 
@@ -269,7 +268,7 @@ class DTL():
                 x = Dropout(params["dropout"])(x)
         x = Dense(4, activation="softmax", name="classification")(x)
         model = tf.keras.Model(model.input, x)
-        model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001), metrics=["accuracy"], loss=params["loss"])
+        model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.00001), metrics=["accuracy"], loss=params["loss"])
         # model.load_weights("w.h5")
         
         self.__model = model
@@ -323,8 +322,8 @@ class DTL():
             else:
                 for i in range(epochs):
                     for j in range(25):
-                        hist = self.__model.train_on_epoch(self.__data["x_train"], self.__data["y_train"],
-                                                batch_size=batch_size,
+                        hist = self.__model.fit(self.__data["x_train"], self.__data["y_train"],
+                                                batch_size=batch_size,epochs=1,
                                                shuffle=True,callbacks=callbacks,
                                                  verbose=verbose)
         # if load_best_weigth:
