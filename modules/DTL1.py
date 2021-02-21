@@ -137,13 +137,19 @@ class DTL():
         np.random.shuffle(tmp_idx)
         x_train=x_train[tmp_idx]
         y_train=y_train[tmp_idx]
+        x=x_train.copy()
+        y=y_train.copy()
         
+        i=int(0.6*len(x))
+        j=int(0.2*len(x))
+        x_train=x[:i]
+        y_train=y[:i]
         
-        i=int(0.8*len(x_train))
-        x_test=x_train[i:]
-        x_train=x_train[:i]
-        y_test=y_train[i:]
-        y_train=y_train[:i]
+        x_val=x[i:i+j]
+        y_val=y[i:i+j]
+        
+        y_test=y_test[i+j:]
+        x_test=x_test[i+j:]
  
 
 
@@ -201,6 +207,10 @@ class DTL():
         data["x_test"]=np.array(x_test)
         data["y_test"]=np.array(y_test)
 
+        
+        data["x_val"]=np.array(x_val)
+        data["y_val"]=np.array(y_val)
+        
         data["x_train"]=np.array(x_train)
         data["y_train"]=np.array(y_train)
         import pickle
