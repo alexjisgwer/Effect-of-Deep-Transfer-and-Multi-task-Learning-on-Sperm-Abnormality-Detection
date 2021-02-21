@@ -311,11 +311,12 @@ class DTL():
                                                   epochs=epochs, verbose=verbose)
             ###It means that we will use offline balancers
             else:
-
-                hist = self.__model.fit(self.__data["x_train"], self.__data["y_train"], epochs=epochs,
-                                        batch_size=batch_size,
-                                       shuffle=True,callbacks=callbacks,
-                                         verbose=verbose)
+                for i in range(epochs):
+                    for j in range(25):
+                        hist = self.__model.train_on_epoch(self.__data["x_train"], self.__data["y_train"],
+                                                batch_size=batch_size,
+                                               shuffle=True,callbacks=callbacks,
+                                                 verbose=verbose)
         # if load_best_weigth:
         #     self.__model.load_weights(name_of_best_weight)
         save_model(self.__model, "model_" + name_of_best_weight)
