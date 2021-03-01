@@ -1,6 +1,6 @@
 import math
 from builtins import enumerate
-
+import keras
 from sklearn.metrics import confusion_matrix,roc_auc_score
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.layers import Lambda
@@ -200,8 +200,8 @@ class DTL():
       
        
         data={}
-        # data["x"]=x_train
-        # data["y"]=y_train
+        data["x"]=x_train
+        data["y"]=y_train
         
         data["x_test"]=np.array(x_test)
         data["y_test"]=np.array(y_test)
@@ -220,7 +220,137 @@ class DTL():
           data=pickle.load(f)
         
         return data
-    def __init__(self, params,base_model,label,address,data=None):
+    @staticmethod
+    def load2():
+        from PIL import Image
+        import os
+        x_val=[]
+        x_train=[]
+        x_test=[]
+        y_val=[]
+        y_train=[]
+        y_test=[]
+        def crop_center(img,cropx,cropy):
+          y,x,_ = img.shape
+          startx = x//2-(cropx//2)
+          starty = y//2-(cropy//2)
+          return np.array(img[starty:starty+cropy,startx:startx+cropx,:])
+        li=os.listdir("/content/HuSHem/01_Normal")
+        i=int(0.8*len(li))
+        j=int(0.2*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/HuSHem/01_Normal/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(0)
+
+          
+        li=os.listdir("/content/HuSHem/02_Tapered")
+        i=int(0.8*len(li))
+        j=int(0.2*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/HuSHem/02_Tapered/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(1)
+  
+
+        li=os.listdir("/content/HuSHem/03_Pyriform")
+
+        for l in range(len(li)):
+          img=Image.open("/content/HuSHem/03_Pyriform/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(2)
+
+
+        li=os.listdir("/content/HuSHem/04_Amorphous")
+        i=int(0.8*len(li))
+        j=int(0.2*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/HuSHem/04_Amorphous/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+
+          x_train.append(img)
+          y_train.append(3)
+        
+        
+        li=os.listdir("/content/fake/no")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/no/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(0)
+
+
+
+        li=os.listdir("/content/fake/ta")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/ta/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(1)
+
+
+
+        li=os.listdir("/content/fake/py")
+        i=int(0.7*len(li))
+        j=int(0.3*len(li))
+        for l in range(len(li)):
+          img=Image.open("/content/fake/py/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(2)
+   
+
+
+        li=os.listdir("/content/fake/ap")
+        
+        for l in range(len(li)):
+          img=Image.open("/content/fake/ap/"+li[l])
+          img=np.array(img)
+          img=crop_center(img,70,70)
+          x_train.append(img)
+          y_train.append(3)
+        y_train=np.array(y_train)
+        x_train=np.array(x_train)
+        
+        
+
+        y_train=np.array(y_train)
+        y_train = y_train.reshape(len(y_train), 1)
+        num_classes = 4
+        y_train = (y_train==np.arange(num_classes).reshape(1, num_classes))*1
+      
+        data={}
+        data["x"]=x_train
+        data["y"]=y_train
+        
+        import pickle
+        with open('data' + '.pkl', 'wb') as f:
+          pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+
+        with open('data' + '.pkl', 'rb') as f:
+          data=pickle.load(f)
+        
+        return data
+    def phase2(self,epochs, load_best_weigth, verbose, TensorB, name_of_best_weight,phase):
+      for l in self.__model.layers[:-14]:
+        l.trainable=True
+      self.__model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.000001), metrics=["accuracy"], loss='categorical_crossentropy')
+      self.train(epochs, load_best_weigth, verbose, TensorB, name_of_best_weight,phase)
+    def __init__(self, params,base_model,label,data=None):
         default_params = {"agumentation": False, "scale": False, "dense_activation": "relu", "regularizition": 0.0
             , "dropout": 0.0, "optimizer": "adam", "number_of_dense": 1, "balancer": "None", "batch_size": 32}
         default_params.update(params)
@@ -240,7 +370,7 @@ class DTL():
         # data["x_test"]=(data["x_test"]-127.5)/127.5
         # data["x_val"]=(data["x_val"]-127.5)/127.5
         # data["x_train"]=(data["x_train"]-127.5)/127.5
-        data=DTL.load()
+        # data=DTL.load2()
         # print(len(data["y_test"]),len(data["y_val"]),len(data["y_train"]))
         regularization = not (params["regularizition"] == 0.0)
 
@@ -286,9 +416,9 @@ class DTL():
         balancer = self.balancer
         callbacks=[]
         # callbacks = [DTL_ModelCheckpoint(self.__data["x_val"], self.__data["y_val"], self.__model, name_of_best_weight)]
-        if TensorB:  # save History of train
-            tb = TensorBoard(log_dir="log_train/" + "#".join(self.details))
-            callbacks.append(tb)
+        # if TensorB:  # save History of train
+        #     tb = TensorBoard(log_dir="log_train/" + "#".join(self.details))
+        #     callbacks.append(tb)
         '''
         Here we have two kinds of sampler.
         online,offline
@@ -300,6 +430,8 @@ class DTL():
         offlines:if balamcer be one of {smote,adasyn,None},then we should just our balancer to fix data and then use agumentation or not.
 
         '''
+        acc=[]
+        loss=[]
         ##batch_balancer
         if balancer == "batch_balancer":
             S = [[], []]
@@ -322,14 +454,19 @@ class DTL():
             else:
                 for i in range(epochs):
                     for j in range(25):
-                        hist = self.__model.fit(self.__data["x_train"], self.__data["y_train"],
+                        h = self.__model.fit(self.__data["x_train"], self.__data["y_train"],
                                                 batch_size=batch_size,epochs=1,
                                                shuffle=True,callbacks=callbacks,
                                                  verbose=verbose)
+                        
+                        loss.append(h.history['loss'][0])
+                        acc.append(h.history['accuracy'][0])
         # if load_best_weigth:
         #     self.__model.load_weights(name_of_best_weight)
+        
         save_model(self.__model, "model_" + name_of_best_weight)
-
+        np.save(name_of_best_weight+"_loss.npy",loss)
+        np.save(name_of_best_weight+"_acc.npy",acc)
         # cleaning model from GPU
 
     def clear(self):
@@ -370,7 +507,7 @@ class DTL():
     @staticmethod
     def k_fold(k,label, epochs, params, load_best_weigth, verbose, TensorB, name_of_best_weight,base_model):
         flag = params['agumentation']
-        data =DTL.load()
+        data =DTL.load2()
         results=[]
         size = len(data['x']) // k
         print(size)
@@ -380,13 +517,13 @@ class DTL():
         y = data['y'][tmp_idx]
         np.save("x.npy", x)
         np.save("y.npy", y)
-        acc_vec = []
+        acc= []
         for i in range(k):
             x_test = x[i * size:(i + 1) * size]
             y_test = y[i * size:(i + 1) * size]
             x_train = np.append(x[0:i * size], x[(i + 1) * size:], axis=0)
             y_train = np.append(y[0:i * size], y[(i + 1) * size:], axis=0)
-            tmp = random.sample(range(len(x_train)), 232)
+            tmp = random.sample(range(len(x_train)), int(len(x_train)*0.2))
             x_val = []
             y_val = []
             # for j in tmp:
@@ -398,15 +535,18 @@ class DTL():
             # y_train = np.delete(y_train, tmp, axis=0)
 
             ##########fixing data#########
-            data = ld.fix_data(flag, x_train, y_train, x_val, y_val, x_test, y_test)
+            data = ld.fix_data(flag, x_train, y_train,x_val,y_val,x_test, y_test)
 
             model = DTL(params=params,base_model=base_model,label=label,data=data)
             model.train(epochs, load_best_weigth, verbose, TensorB, name_of_best_weight + str(i) + ".h5", "k_fold")
+            model.phase2(epochs, load_best_weigth, verbose, TensorB, "p2"+name_of_best_weight + str(i) + ".h5", "k_fold")
             results.append(model.evaluate())
             print(results[-1])
+            acc.append(results[-1][1])
             model.clear()
             del model
-        return results
+        
+        return results,np.mean(acc)
 
 
 
