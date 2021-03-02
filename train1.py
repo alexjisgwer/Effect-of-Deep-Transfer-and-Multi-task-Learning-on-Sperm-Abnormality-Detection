@@ -86,8 +86,10 @@ def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_ad
           while True:
             ans,acc=DTL.k_fold(5,label, epochs, params, load_best_weigth=True, verbose=1, TensorB=True, name_of_best_weight=name_of_best_weight,base_model=model)
             print(ans)
-            if acc>93:
+            if acc>0.93:
+              os.system("cp -r * /content/drive/MyDrive/h_D")
               break
+            
         else:
           model = DTL(params=params, base_model=model,label=label,address=address)
           model.train(epochs, load_best_weigth=True, verbose=1, TensorB=True, name_of_best_weight=name_of_best_weight, phase="train")
