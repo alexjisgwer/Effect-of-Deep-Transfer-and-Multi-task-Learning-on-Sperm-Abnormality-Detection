@@ -372,9 +372,8 @@ class DTL():
   
         from PIL import Image
         import numpy as np
-        x=[]
-        y=[]
-        label={"Non-Viable-Tumor":0,"Non-Tumor":1,"Viable":2}
+        
+        label={"Non-Viable-Tumor":[],"Non-Tumor":[],"Viable":[]}
         for i in range(len(df)):
           a=df.iloc[i]['A']
           tmp=a.replace(" - ","-")[:-3]
@@ -382,28 +381,39 @@ class DTL():
           try:
             img=Image.open("/content/resized/"+tmp+"JPG")
             img=np.array(img)
-            y.append(label[df.iloc[i]['B']])
-            x.append(img)
+            label[df.iloc[i]['B']].append(img)
           except:
             continue
-        x=np.array(x)
-        y=np.array(y).reshape((len(y),1))
-        # print(x.shape,y.shape)
+        x_train=[]
+        y_train=[]
+        x_val=[]
+        y_val=[]
+        x_test=[]
+        y_test=[]
         num_classes = 3
-        i=int(len(x)*0.7)
-        j=int(len(x)*0.1)
-        x_train=x[:i]
-        y_train=y[:i]
-        x_val=x[i:i+j]
-        y_val=y[i:i+j]
-        x_test=x[i+j:]
-        y_test=y[i+j:]
+        t=0
+        for v in label.values():
+          i=int(len(v)*0.7)
+          j=int(len(v)*0.1)
+          x_train+=v[:i]
+          y_train+=[[t] for i in range(len(v[:i]))]
+          x_val=v[i:i+j]
+          y_val=[[t] for i in range(len(v[i:i+j]))]
+          x_test=v[i+j:]
+          y_test=[[t] for i in range(len(v[i+j:]))]
+          t+=1
+        
+        y_train=np.array(y_train)
+        y_val=np.array(y_val)
+        y_test=np.array(y_test)
+        x_train=np.array(x_train)
+        x_val=np.array(x_val)
+        x_test=np.array(x_test)
+
         y_train = (y_train==np.arange(num_classes).reshape(1, num_classes))*1
         y_test = (y_test==np.arange(num_classes).reshape(1, num_classes))*1
         y_val = (y_val==np.arange(num_classes).reshape(1, num_classes))*1
-        # y_train=np.array(y_train)
-        # y_val=np.array(y_val)
-        # y_test=np.array(y_test)
+        
         print(x_train.shape,y_train.shape)
         data = ld.fix_data(False, x_train, y_train,x_val,y_val,x_test, y_test)
 
