@@ -361,15 +361,62 @@ class DTL():
         self.batch_size = params["batch_size"]
         # if params['agumentation']:
         #     data["x_val"] = ld.normalize(data["x_val"])
+        import pandas as pd
+        df=pd.read_csv("/content/1.csv")
+        df.columns=['A','B']
+
+        for i in range(2,23):
+          s=pd.read_csv("/content/"+str(i)+".csv")
+          s.columns=['A','B']
+          df=df.append(s)
+  
+        from PIL import Image
+        import numpy as np
+        x=[]
+        y=[]
+        label={"Non-Viable-Tumor":0,"Non-Tumor":1,"Viable":2}
+        for i in range(len(df)):
+          a=df.iloc[i]['A']
+          tmp=a.replace(" - ","-")[:-3]
+          tmp=tmp.replace(" ","-")
+          try:
+            img=Image.open("/content/resized/"+tmp+"JPG")
+            img=np.array(img)
+            y.append(label[df.iloc[i]['B']])
+            x.append(img)
+          except:
+            continue
+        x=np.array(x)
+        y=np.array(y).reshape((len(y),1))
+        # print(x.shape,y.shape)
+        num_classes = 3
+        i=int(len(x)*0.7)
+        j=int(len(x)*0.1)
+        x_train=x[:i]
+        y_train=y[:i]
+        x_val=x[i:i+j]
+        y_val=y[i:i+j]
+        x_test=x[i+j:]
+        y_test=y[i+j:]
+        y_train = (y_train==np.arange(num_classes).reshape(1, num_classes))*1
+        y_test = (y_test==np.arange(num_classes).reshape(1, num_classes))*1
+        y_val = (y_val==np.arange(num_classes).reshape(1, num_classes))*1
+        # y_train=np.array(y_train)
+        # y_val=np.array(y_val)
+        # y_test=np.array(y_test)
+        print(x_train.shape,y_train.shape)
+        data = ld.fix_data(False, x_train, y_train,x_val,y_val,x_test, y_test)
+
+
         #     data["x_test"] = ld.normalize(data["x_test"])
         # elif params["scale"]:
         #     data["x_val"] = ld.normalize(data["x_val"])
         #     data["x_test"] = ld.normalize(data["x_test"])
         #     data["x_train"] = ld.normalize(data["x_train"])
 
-        # data["x_test"]=(data["x_test"]-127.5)/127.5
-        # data["x_val"]=(data["x_val"]-127.5)/127.5
-        # data["x_train"]=(data["x_train"]-127.5)/127.5
+        data["x_test"]=(data["x_test"]-127.5)/127.5
+        data["x_val"]=(data["x_val"]-127.5)/127.5
+        data["x_train"]=(data["x_train"]-127.5)/127.5
         # data=DTL.load2()
         # print(len(data["y_test"]),len(data["y_val"]),len(data["y_train"]))
         regularization = not (params["regularizition"] == 0.0)
@@ -384,10 +431,10 @@ class DTL():
         # con = concatenate([inp, inp, inp])
         import keras
         # model = keras.models.load_model(address)
-        model = Model(include_top=False, weights='imagenet', input_shape=(70,70,3))
+        model = Model(include_top=False, weights='imagenet', input_shape=(128,128,3))
         x = Flatten()(model.layers[-1].output)
-        for l in model.layers:
-          l.trainable=False
+        # for l in model.layers:
+        #   l.trainable=False
         for i in range(params["number_of_dense"]):
             if regularization:
                 x = Dense(params["nn"], activation=params["dense_activation"],
@@ -396,9 +443,9 @@ class DTL():
                 x = Dense(params["nn"], activation=params["dense_activation"])(x)
             if dropout:
                 x = Dropout(params["dropout"])(x)
-        x = Dense(4, activation="softmax", name="classification")(x)
+        x = Dense(3, activation="softmax", name="classification")(x)
         model = tf.keras.Model(model.input, x)
-        model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.00001), metrics=["accuracy"], loss=params["loss"])
+        model.compile(optimizer="Adadelta", metrics=["accuracy"], loss=params["loss"])
         # model.load_weights("w.h5")
         
         self.__model = model
@@ -415,10 +462,10 @@ class DTL():
         batch_size = self.batch_size
         balancer = self.balancer
         callbacks=[]
-        # callbacks = [DTL_ModelCheckpoint(self.__data["x_val"], self.__data["y_val"], self.__model, name_of_best_weight)]
-        # if TensorB:  # save History of train
-        #     tb = TensorBoard(log_dir="log_train/" + "#".join(self.details))
-        #     callbacks.append(tb)
+        callbacks = [DTL_ModelCheckpoint(self.__data["x_val"], self.__data["y_val"], self.__model, name_of_best_weight)]
+        if TensorB:  # save History of train
+            tb = TensorBoard(log_dir="log_train/" + "#".join(self.details))
+            callbacks.append(tb)
         '''
         Here we have two kinds of sampler.
         online,offline
@@ -452,21 +499,19 @@ class DTL():
                                                   epochs=epochs, verbose=verbose)
             ###It means that we will use offline balancers
             else:
-                for i in range(epochs):
-                    for j in range(25):
-                        h = self.__model.fit(self.__data["x_train"], self.__data["y_train"],
-                                                batch_size=batch_size,epochs=1,
+                self.__model.fit(self.__data["x_train"], self.__data["y_train"],
+                                                batch_size=batch_size,epochs=epochs,
                                                shuffle=True,callbacks=callbacks,
                                                  verbose=verbose)
                         
-                        loss.append(h.history['loss'][0])
-                        acc.append(h.history['accuracy'][0])
-        # if load_best_weigth:
-        #     self.__model.load_weights(name_of_best_weight)
+                        # loss.append(h.history['loss'][0])
+                        # acc.append(h.history['accuracy'][0])
+        if load_best_weigth:
+            self.__model.load_weights(name_of_best_weight)
         
         save_model(self.__model, "model_" + name_of_best_weight)
-        np.save(name_of_best_weight+"_loss.npy",loss)
-        np.save(name_of_best_weight+"_acc.npy",acc)
+        # np.save(name_of_best_weight+"_loss.npy",loss)
+        # np.save(name_of_best_weight+"_acc.npy",acc)
         # cleaning model from GPU
 
     def clear(self):
