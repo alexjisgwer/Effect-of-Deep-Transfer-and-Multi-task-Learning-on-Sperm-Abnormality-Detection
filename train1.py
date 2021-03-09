@@ -64,7 +64,7 @@ def get_model(arg):
 
     name,version=arg.split("_")
     list={}
-    list["vgg"]={"16":tf.keras.applications.vgg16.VGG16}
+    list["vgg"]={"16":tf.keras.applications.vgg19.VGG19}
     list["densenet"]={"121":tf.keras.applications.densenet.DenseNet121,"169":tf.keras.applications.densenet.DenseNet169,"201":tf.keras.applications.densenet.DenseNet201}
     list["resnet"]={"50":tf.keras.applications.resnet.ResNet50,"101":tf.keras.applications.resnet.ResNet101,"152":tf.keras.applications.resnet.ResNet152}
     list["resnetV2"]={"50":tf.keras.applications.resnet_v2.ResNet50V2,"101":tf.keras.applications.resnet_v2.ResNet101V2,"152":tf.keras.applications.resnet_v2.ResNet152V2}
