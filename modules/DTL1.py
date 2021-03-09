@@ -397,10 +397,10 @@ class DTL():
           j=int(len(v)*0.1)
           x_train+=v[:i]
           y_train+=[[t] for i in range(len(v[:i]))]
-          x_val=v[i:i+j]
-          y_val=[[t] for i in range(len(v[i:i+j]))]
-          x_test=v[i+j:]
-          y_test=[[t] for i in range(len(v[i+j:]))]
+          x_val+=v[i:i+j]
+          y_val+=[[t] for i in range(len(v[i:i+j]))]
+          x_test+=v[i+j:]
+          y_test+=[[t] for i in range(len(v[i+j:]))]
           t+=1
         
         y_train=np.array(y_train)
