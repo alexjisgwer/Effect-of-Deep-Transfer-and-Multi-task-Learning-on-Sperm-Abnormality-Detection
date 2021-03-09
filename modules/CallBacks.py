@@ -70,6 +70,6 @@ class DTL_ModelCheckpoint(tf.keras.callbacks.Callback):
 
             self.best_loss = loss
 
-            print("updated to ", str(loss))
+            print("updated to ", str(acc))
 
 
