@@ -510,7 +510,7 @@ class DTL():
             ###It means that we will use offline balancers
             else:
                 self.__model.fit(self.__data["x_train"], self.__data["y_train"],
-                                                batch_size=batch_size,epochs=epochs,
+                                                batch_size=batch_size,epochs=epochs,validation_data=(self.__data["x_val"], self.__data["y_val"]),
                                                shuffle=True,callbacks=callbacks,
                                                  verbose=verbose)
                         
