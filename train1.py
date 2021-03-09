@@ -75,7 +75,7 @@ def get_model(arg):
     else:
         return load_model(arg)
 
-def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_address,k_fold,address):
+def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_address,k_fold):
     model=get_model(model_name)
 
     if type=="dtl":
@@ -91,7 +91,7 @@ def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_ad
               break
             
         else:
-          model = DTL(params=params, base_model=model,label=label,address=address)
+          model = DTL(params=params, base_model=model,label=label)
           model.train(epochs, load_best_weigth=True, verbose=1, TensorB=True, name_of_best_weight=name_of_best_weight, phase="train")
           ans = model.evaluate()
           print(ans)
@@ -118,7 +118,7 @@ def _main(epochs,label,model_name,type,phase,name_of_best_weight,second_model_ad
 
 def main():
   args=get_args()
-  _main(args.epochs,args.label,args.model,args.type,args.phase,args.bwn,args.second_model_address,args.k_fold,args.address)
+  _main(args.epochs,args.label,args.model,args.type,args.phase,args.bwn,args.second_model_address,args.k_fold)
   sys.stdout.flush()
 
 if __name__ == '__main__':
