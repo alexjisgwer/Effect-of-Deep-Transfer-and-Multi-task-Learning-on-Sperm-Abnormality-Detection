@@ -387,7 +387,7 @@ class DTL():
         for k in label.keys():
           tmp_idx = np.arange(len(label[k]))
           np.random.shuffle(tmp_idx)
-          label[k] =list(np.array(label)[k][tmp_idx])
+          label[k] =list(np.array(label[k])[tmp_idx])
         x_train=[]
         y_train=[]
         x_val=[]
