@@ -385,9 +385,9 @@ class DTL():
           except:
             continue
         for k in label.keys():
-          tmp_idx = np.arange(len(v[k]))
+          tmp_idx = np.arange(len(label[k]))
           np.random.shuffle(tmp_idx)
-          v[k] =v[k][tmp_idx]
+          label[k] =label[k][tmp_idx]
         x_train=[]
         y_train=[]
         x_val=[]
