@@ -384,6 +384,10 @@ class DTL():
             label[df.iloc[i]['B']].append(img)
           except:
             continue
+        for k in label.keys():
+          tmp_idx = np.arange(len(v[k]))
+          np.random.shuffle(tmp_idx)
+          v[k] =v[k][tmp_idx]
         x_train=[]
         y_train=[]
         x_val=[]
