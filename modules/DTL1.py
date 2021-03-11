@@ -431,6 +431,9 @@ class DTL():
         data["x_test"]=(data["x_test"]-127.5)/127.5
         data["x_val"]=(data["x_val"]-127.5)/127.5
         data["x_train"]=(data["x_train"]-127.5)/127.5
+        with open('data' + '.pkl', 'wb') as f:
+          pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+
         # data=DTL.load2()
         # print(len(data["y_test"]),len(data["y_val"]),len(data["y_train"]))
         regularization = not (params["regularizition"] == 0.0)
