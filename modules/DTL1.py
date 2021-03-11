@@ -394,13 +394,13 @@ class DTL():
         t=0
         for v in label.values():
           i=int(len(v)*0.7)
-          j=int(len(v)*0.1)
+          j=int(len(v)*0.2)
           x_train+=v[:i]
           y_train+=[[t] for i in range(len(v[:i]))]
-          x_val+=v[i:i+j]
-          y_val+=[[t] for i in range(len(v[i:i+j]))]
-          x_test+=v[i+j:]
-          y_test+=[[t] for i in range(len(v[i+j:]))]
+          x_test+=v[i:i+j]
+          y_test+=[[t] for i in range(len(v[i:i+j]))]
+          x_val+=v[i+j:]
+          y_val+=[[t] for i in range(len(v[i+j:]))]
           t+=1
         
         y_train=np.array(y_train)
@@ -414,7 +414,7 @@ class DTL():
         y_test = (y_test==np.arange(num_classes).reshape(1, num_classes))*1
         y_val = (y_val==np.arange(num_classes).reshape(1, num_classes))*1
         
-        print(x_train.shape,y_train.shape)
+        print(y_val.shape,y_test.shape)
         data = ld.fix_data(False, x_train, y_train,x_val,y_val,x_test, y_test)
 
 
