@@ -373,7 +373,7 @@ class DTL():
         from PIL import Image
         import numpy as np
         
-        label={"Non-Viable-Tumor":[],"Non-Tumor":[],"Viable":[]}
+        label={"Non-Viable-Tumor":[],"Non-Tumor":[]}
         for i in range(len(df)):
           a=df.iloc[i]['A']
           tmp=a.replace(" - ","-")[:-3]
@@ -460,7 +460,7 @@ class DTL():
                 x = Dense(params["nn"], activation=params["dense_activation"])(x)
             if dropout:
                 x = Dropout(params["dropout"])(x)
-        x = Dense(3, activation="softmax", name="classification")(x)
+        x = Dense(1, activation="sigmoid", name="classification")(x)
         model = tf.keras.Model(model.input, x)
         model.compile(optimizer="Adadelta", metrics=["accuracy"], loss=params["loss"])
         # model.load_weights("w.h5")
