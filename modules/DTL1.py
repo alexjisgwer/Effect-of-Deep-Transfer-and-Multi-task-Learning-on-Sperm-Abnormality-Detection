@@ -373,7 +373,7 @@ class DTL():
         from PIL import Image
         import numpy as np
         
-        label={"Non-Viable-Tumor":[],"Non-Tumor":[]}
+        label={"Non-Viable-Tumor":[],"Non-Tumor":[],"Viable":[]}
         for i in range(len(df)):
           a=df.iloc[i]['A']
           tmp=a.replace(" - ","-")[:-3]
@@ -394,7 +394,7 @@ class DTL():
         y_val=[]
         x_test=[]
         y_test=[]
-#         num_classes = 3
+        num_classes = 3
         t=0
         for v in label.values():
           i=int(len(v)*0.7)
@@ -414,9 +414,9 @@ class DTL():
         x_val=np.array(x_val)
         x_test=np.array(x_test)
 
-#         y_train = (y_train==np.arange(num_classes).reshape(1, num_classes))*1
-#         y_test = (y_test==np.arange(num_classes).reshape(1, num_classes))*1
-#         y_val = (y_val==np.arange(num_classes).reshape(1, num_classes))*1
+        y_train = (y_train==np.arange(num_classes).reshape(1, num_classes))*1
+        y_test = (y_test==np.arange(num_classes).reshape(1, num_classes))*1
+        y_val = (y_val==np.arange(num_classes).reshape(1, num_classes))*1
         
         print(y_val.shape,y_test.shape)
         data = ld.fix_data(False, x_train, y_train,x_val,y_val,x_test, y_test)
@@ -460,7 +460,7 @@ class DTL():
                 x = Dense(params["nn"], activation=params["dense_activation"])(x)
             if dropout:
                 x = Dropout(params["dropout"])(x)
-        x = Dense(1, activation="sigmoid", name="classification")(x)
+        x = Dense(3, activation="softmax", name="classification")(x)
         model = tf.keras.Model(model.input, x)
         model.compile(optimizer="Adadelta", metrics=["accuracy"], loss=params["loss"])
         # model.load_weights("w.h5")
